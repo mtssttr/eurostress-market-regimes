@@ -1,0 +1,111 @@
+status: frozen_pre_test
+frozen_on: "2026-09-24"
+locked_test_opened: false
+
+sample:
+  test_start: "2020-01-01"
+  test_end: "2025-12-31"
+  expected_complete_rows: 312
+  required_split_label: locked_test
+
+qlike:
+  formula: "target / forecast - log(target / forecast) - 1"
+  positive_floor: 1.0e-12
+  reject_nonpositive_or_nonfinite_inputs: true
+
+bootstrap:
+  method: circular_moving_block
+  block_length_weeks: 8
+  replications: 10000
+  confidence_level: 0.95
+  random_seed: 20260924
+  sensitivity_block_lengths_weeks: [4, 13]
+  interval: percentile
+  paired_resampling: true
+
+comparisons:
+  effect: "mean_qlike_reference - mean_qlike_candidate"
+  positive_effect_favors: candidate
+  rows:
+    - id: volatility_hmm_vs_ewma
+      candidate: hmm_volatility_only
+      reference: ewma
+      classification: secondary_confirmatory
+    - id: pca_hmm_vs_ewma
+      candidate: hmm_pca_exploratory
+      reference: ewma
+      classification: exploratory_primary
+    - id: ensemble_hmm_vs_ewma
+      candidate: hmm_cross_asset_seed_ensemble
+      reference: ewma
+      classification: exploratory_robustness
+    - id: pca_hmm_vs_historical
+      candidate: hmm_pca_exploratory
+      reference: historical
+      classification: exploratory
+    - id: pca_hmm_vs_volatility_hmm
+      candidate: hmm_pca_exploratory
+      reference: hmm_volatility_only
+      classification: exploratory_incremental
+    - id: ensemble_hmm_vs_pca_hmm
+      candidate: hmm_cross_asset_seed_ensemble
+      reference: hmm_pca_exploratory
+      classification: exploratory_robustness
+
+reporting:
+  original_cross_asset_confirmatory_status: "not_testable_no_admissible_model"
+  confirmatory_success_rule: "mean effect positive and 95% interval strictly above zero"
+  exploratory_intervals_are_descriptive: true
+  multiplicity_adjustment: none_one_secondary_confirmatory_comparison
+  report_negative_and_null_results: true
+  prohibit_trading_or_profitability_claims: true
+  prohibit_causal_claims: true
+
+secondary_metrics:
+  tail_event:
+    definition: "next-week equity return below training fifth percentile"
+    threshold_quantile: 0.05
+    metrics: [brier_score, average_precision]
+    average_precision_implementation: sklearn.metrics.average_precision_score
+    state_probability_calibration: training_only_weighted_mean
+  shock_score:
+    model: hmm_pca_exploratory
+    definition: "negative one-step predictive log density"
+    threshold_period: validation
+    threshold_quantile: 0.99
+    quantile_method: higher
+  ciss_agreement:
+    metric: spearman_correlation
+    model_probability: pca_higher_training_risk_state
+  duration:
+    definition: median_contiguous_hard_filtered_run_weeks
+  feature_ablation:
+    method: set_one_standardized_feature_to_training_mean_zero_without_refitting
+    scope: hmm_pca_exploratory
+    metric: locked_test_mean_qlike_change_from_unablated
+
+model_roles:
+  confirmatory_secondary: data/models/hmm_volatility_only.joblib
+  exploratory_primary: data/exploratory/hmm_pca_exploratory.joblib
+  exploratory_robustness: data/exploratory/hmm_cross_asset_seed_ensemble.joblib
+
+critical_files:
+  - config/series.yml
+  - config/exploratory.yml
+  - config/evaluation_lock.yml
+  - protocol/research_protocol.md
+  - protocol/exploratory_analysis_log.md
+  - src/eurostress/features.py
+  - src/eurostress/benchmarks.py
+  - src/eurostress/models.py
+  - src/eurostress/exploratory.py
+  - src/eurostress/evaluation.py
+  - src/eurostress/cli.py
+  - pyproject.toml
+  - data/processed/feature_manifest.json
+  - data/processed/benchmark_manifest.json
+  - data/models/model_manifest.json
+  - data/models/hmm_volatility_only.joblib
+  - data/exploratory/exploratory_manifest.json
+  - data/exploratory/hmm_pca_exploratory.joblib
+  - data/exploratory/hmm_cross_asset_seed_ensemble.joblib

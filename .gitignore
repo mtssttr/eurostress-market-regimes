@@ -1,0 +1,21 @@
+.DS_Store
+.venv/
+__pycache__/
+.pytest_cache/
+.ruff_cache/
+*.egg-info/
+
+# Downloaded or generated data
+data/raw/
+data/processed/
+data/models/
+data/exploratory/
+data/evaluation/
+data/eurostress.duckdb
+
+# Generated reports and figures
+# Portfolio figures are intentionally versioned for the public README.
+
+# Superseded presentation retained locally; publish the Quant Risk deck instead.
+reports/EuroStress_Portfolio_Deck.pdf
+reports/EuroStress_Portfolio_Deck.pptx

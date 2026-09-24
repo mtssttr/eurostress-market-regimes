@@ -1,0 +1,4 @@
+family,state_count,converged_seeds,elite_training_seeds,qualified_members,member_seeds,validation_loglik,validation_loglik_per_observation,admissible,failure_reasons
+hmm_cross_asset_seed_ensemble,2,20,20,14,0;1;2;3;4;5;6;7;8;12;13;14;18;19,-1365.1382734520826,-6.531762073933409,True,
+hmm_cross_asset_seed_ensemble,3,20,20,0,,,,False,insufficient_qualified_members
+hmm_cross_asset_seed_ensemble,4,20,2,0,,,,False,insufficient_qualified_members

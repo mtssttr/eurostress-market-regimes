@@ -1,0 +1,4 @@
+family,state_count,best_seed,validation_loglik,validation_loglik_per_observation,converged_seed_fraction,validation_loglik_iqr_per_observation,minimum_validation_occupancy,minimum_validation_median_duration,admissible,failure_reasons
+hmm_pca_exploratory,2,12,-793.041118703717,-3.7944551134149136,1.0,0.0008103747154795116,0.07556688914260767,7.5,True,
+hmm_pca_exploratory,3,13,-727.2938381759013,-3.4798748238081405,1.0,0.00015068100905946125,0.009465507256400274,1.0,False,state_occupancy;state_duration
+hmm_pca_exploratory,4,19,-659.1168423714049,-3.153669102255526,1.0,0.16576228782002467,0.009252674171156008,1.0,False,seed_instability;state_occupancy;state_duration

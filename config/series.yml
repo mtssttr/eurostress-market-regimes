@@ -1,0 +1,104 @@
+project:
+  name: eurostress
+  start_date: "2007-03-30"
+  end_date: "2025-12-31"
+  model_frequency: "W-FRI"
+  max_staleness_calendar_days: 5
+  timezone: "Europe/Paris"
+
+splits:
+  train_end: "2015-12-31"
+  validation_start: "2016-01-01"
+  validation_end: "2019-12-31"
+  test_start: "2020-01-01"
+  test_end: "2025-12-31"
+
+evaluation:
+  target_horizon_calendar_days: 7
+  minimum_target_returns: 2
+  annualization_trading_days: 252
+  historical_variance_window_trading_days: 20
+  ewma_lambda: 0.94
+  ewma_initialization_trading_days: 20
+
+models:
+  state_counts: [2, 3, 4]
+  deterministic_seed_start: 0
+  deterministic_initializations: 20
+  covariance_type: diag
+  maximum_iterations: 500
+  convergence_tolerance: 0.0001
+  covariance_floor: 0.0001
+  minimum_state_occupancy: 0.05
+  minimum_median_duration_weeks: 2.0
+  minimum_converged_seed_fraction: 0.80
+  maximum_validation_loglik_iqr_per_observation: 0.05
+  tie_tolerance_loglik_per_observation: 0.01
+  state_variance_mapping: filtered_probability_weighted_training_mean
+
+series:
+  euro_stoxx_50:
+    role: model_input_and_target
+    provider: yahoo
+    symbol: "^STOXX50E"
+    description: "EURO STOXX 50 price index"
+    unit: index_points
+    redistribution: prohibited
+    transformations:
+      - weekly_log_return
+      - trailing_20d_realised_volatility
+
+  eurusd:
+    role: model_input
+    provider: ecb
+    flow: EXR
+    key: "D.USD.EUR.SP00.A"
+    description: "US dollars per euro reference rate"
+    unit: usd_per_eur
+    redistribution: attribution_required
+    transformations:
+      - weekly_log_return
+
+  euro_aaa_2y:
+    role: model_input
+    provider: ecb
+    flow: YC
+    key: "B.U2.EUR.4F.G_N_A.SV_C_YM.SR_2Y"
+    description: "Euro-area AAA two-year spot yield"
+    unit: percent_per_annum
+    redistribution: attribution_required
+    transformations:
+      - weekly_change_basis_points
+
+  euro_aaa_10y:
+    role: model_input
+    provider: ecb
+    flow: YC
+    key: "B.U2.EUR.4F.G_N_A.SV_C_YM.SR_10Y"
+    description: "Euro-area AAA ten-year spot yield"
+    unit: percent_per_annum
+    redistribution: attribution_required
+    transformations:
+      - aaa_curve_slope_change_basis_points
+
+  euro_all_ratings_10y:
+    role: model_input
+    provider: ecb
+    flow: YC
+    key: "B.U2.EUR.4F.G_N_C.SV_C_YM.SR_10Y"
+    description: "Euro-area all-ratings ten-year spot yield"
+    unit: percent_per_annum
+    redistribution: attribution_required
+    transformations:
+      - fragmentation_spread_change_basis_points
+
+  new_ciss:
+    role: external_validation_only
+    provider: ecb
+    flow: CISS
+    key: "D.U2.Z0Z.4F.EC.SS_CIN.IDX"
+    description: "ECB New Composite Indicator of Systemic Stress"
+    unit: index
+    redistribution: attribution_required
+    transformations:
+      - weekly_last_observation

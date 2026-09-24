@@ -1,0 +1,50 @@
+{
+  "status": "frozen_locked_test_unopened",
+  "frozen_at_utc": "2026-09-24T08:38:38.230344+00:00",
+  "evaluation_config": "config/evaluation_lock.yml",
+  "evaluation_config_sha256": "d19cfd1e50da6cb09231d1baa15bb3b099c459d3c77226f886e44f1e0d738e7b",
+  "critical_file_hashes": {
+    "config/series.yml": "14748b67d5389f874751ff27e68137f0e54d88115e37614114257dca5d05a065",
+    "config/exploratory.yml": "ad76883f2d707be846106644f650a38fa01aac0df211413fadc8896effdad60f",
+    "config/evaluation_lock.yml": "d19cfd1e50da6cb09231d1baa15bb3b099c459d3c77226f886e44f1e0d738e7b",
+    "protocol/research_protocol.md": "f25d2a863f2ba0e50adb55c517427c03a33766c7ef8d987d33eb58af44c7a6ee",
+    "protocol/exploratory_analysis_log.md": "05f2e29ab2ec0cc93021bd0a0229768769d7a7b57405072eb886ae57292da01d",
+    "src/eurostress/features.py": "3355f6084b0b1254a0b208ce68525bb20f41f541d58d230435f4ee023b0f9947",
+    "src/eurostress/benchmarks.py": "2a8038f04a10dc80afb388342220b83c30aefd16a3f5424ee5abc7113e704ba9",
+    "src/eurostress/models.py": "1f7cd02e6aaaf7d1f74f881292e02ca3f235c3a66a1197255f4a926dd59d1381",
+    "src/eurostress/exploratory.py": "9ab39e386ed274cc81fc09a395111936dd55bae3c48e230b60a3c19051e9d949",
+    "src/eurostress/evaluation.py": "e1bba73a528e8ca2044c1bc265adab515fcf07f6294495d4520a3a6504a05f3d",
+    "src/eurostress/cli.py": "da77283d172bcc40344ec96cfa025eb08b7de7b8a8fc3fd26f232ff064e74a34",
+    "pyproject.toml": "f5f6a3468a5dc62a087097aefec5e65f80a016db124d8b0e389815246c063d64",
+    "data/processed/feature_manifest.json": "6928e456e4c4d2a72f67e8d28bc23a9826ae50d5b942e1fbc47845d0966f9740",
+    "data/processed/benchmark_manifest.json": "6319a6218e754f5ceadfc57f6370963819aa86939e0c3055c95baa042353f641",
+    "data/models/model_manifest.json": "bbbf8f3a9bf23e88a53e8c12167ddcb9281ee6d1293a610d6c8d41cfc41a8e1b",
+    "data/models/hmm_volatility_only.joblib": "8af0fb17e9de35c3f40b27d25a4c134b2fb32821447f29bdfa2c42f213692d0b",
+    "data/exploratory/exploratory_manifest.json": "edd2ff8c651b77410819e53b2edeee408014ee88b36a78ff984a85a94e9e8ba0",
+    "data/exploratory/hmm_pca_exploratory.joblib": "d1bac10c337006265be62ad6a05bc3bba185f54299b7c2a3d6ffff7dca34b33c",
+    "data/exploratory/hmm_cross_asset_seed_ensemble.joblib": "26630c272a607832adf61494aa98c2aea157f0ced5e475a510306e5a666ea83d"
+  },
+  "expected_data_hashes": {
+    "data/processed/weekly_features.parquet": "be5e1ef1d9624e15a83c917608c6172207c4a68619044b8e5c20a36a1e44fddc",
+    "data/processed/weekly_features_scaled.parquet": "da424deb2c1f7b7a4228750e4f33ad01c70ffdab6836d71064d646479f501f01",
+    "data/processed/weekly_targets_benchmarks.parquet": "688cec8714cf1076773e5168fc72f2dcbac0365086ad58931c8ad6c113460971"
+  },
+  "dependency_run_ids": {
+    "features": "features-915bedda71ed978c",
+    "benchmarks": "benchmarks-2891a5e22b410609",
+    "confirmatory_models": "models-4ec8603766073d42",
+    "exploratory_models": "exploratory-d4b36fffcc78cc48"
+  },
+  "expected_locked_rows": 312,
+  "runtime_versions": {
+    "python": "3.13.7 (v3.13.7:bcee1c32211, Aug 14 2025, 19:10:51) [Clang 16.0.0 (clang-1600.0.26.6)]",
+    "numpy": "2.5.3",
+    "pandas": "2.3.3",
+    "scipy": "1.18.1",
+    "scikit_learn": "1.9.1",
+    "joblib": "1.6.0",
+    "pyyaml": "6.0.3"
+  },
+  "locked_test_rows_read_while_freezing": 0,
+  "target_performance_metrics_computed_while_freezing": false
+}

@@ -1,0 +1,46 @@
+[build-system]
+requires = ["setuptools>=69", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "eurostress"
+version = "0.1.0"
+description = "A point-in-time European cross-asset market risk monitor"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+  "duckdb>=1.1,<2",
+  "hmmlearn>=0.3,<1",
+  "joblib>=1.4,<2",
+  "numpy>=1.26,<3",
+  "pandas>=2.2,<3",
+  "pyarrow>=16,<20",
+  "PyYAML>=6,<7",
+  "requests>=2.32,<3",
+  "scikit-learn>=1.5,<2",
+  "scipy>=1.13,<2",
+  "yfinance>=0.2.40,<1",
+]
+
+[project.optional-dependencies]
+dev = [
+  "pytest>=8,<9",
+  "ruff>=0.8,<1",
+]
+
+[project.scripts]
+eurostress = "eurostress.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+testpaths = ["tests"]
+filterwarnings = [
+  "ignore:The 'generic' unit for NumPy timedelta is deprecated:DeprecationWarning:pandas.core.resample",
+]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"

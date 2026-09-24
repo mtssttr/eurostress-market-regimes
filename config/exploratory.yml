@@ -1,0 +1,41 @@
+status: exploratory
+frozen_on: "2026-09-24"
+confirmatory_phase4_results_viewed: true
+locked_test_access: prohibited
+
+shared:
+  state_counts: [2, 3, 4]
+  deterministic_seed_start: 0
+  deterministic_initializations: 20
+  covariance_type: diag
+  maximum_iterations: 500
+  convergence_tolerance: 0.0001
+  covariance_floor: 0.0001
+  minimum_state_occupancy: 0.05
+  minimum_median_duration_weeks: 2.0
+  minimum_converged_seed_fraction: 0.80
+  maximum_validation_loglik_iqr_per_observation: 0.05
+  tie_tolerance_loglik_per_observation: 0.01
+
+pca_hmm:
+  components: 3
+  solver: full
+  fit_period: training_only
+  use_confirmatory_admissibility_rules: true
+
+seed_ensemble_hmm:
+  elite_training_loglik_tolerance_per_observation: 0.05
+  minimum_qualified_members: 5
+  qualification:
+    minimum_state_occupancy: 0.05
+    minimum_median_duration_weeks: 2.0
+  forecast_aggregation: equal_weight
+  predictive_density_aggregation: equal_weight_mixture
+
+post_stabilization_roles:
+  primary_exploratory_model: pca_hmm
+  robustness_model: seed_ensemble_hmm
+  rationale: >-
+    Use the PCA HMM as the primary exploratory specification if it passes the original
+    admissibility rules because it is a single reproducible regime model. Use the full-feature
+    seed ensemble as a robustness forecast because member state labels are not directly shared.
