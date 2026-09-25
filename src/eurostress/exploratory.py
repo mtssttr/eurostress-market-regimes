@@ -192,8 +192,9 @@ def build_exploratory_models(
     processed = Path(processed_directory)
     output = Path(output_directory)
     reports = Path(report_directory)
+    diagnostics = reports / "exploratory"
     output.mkdir(parents=True, exist_ok=True)
-    reports.mkdir(parents=True, exist_ok=True)
+    diagnostics.mkdir(parents=True, exist_ok=True)
     feature_manifest = processed / "feature_manifest.json"
     benchmark_manifest = processed / "benchmark_manifest.json"
     feature_path = processed / "weekly_features_scaled.parquet"
@@ -233,14 +234,14 @@ def build_exploratory_models(
     )
     pca_candidate_frame = pd.DataFrame(pca_candidates)
     pca_seed_frame = pd.DataFrame(pca_seeds)
-    pca_candidate_frame.to_csv(reports / "phase4b_pca_candidates.csv", index=False)
-    pca_seed_frame.to_csv(reports / "phase4b_pca_seeds.csv", index=False)
+    pca_candidate_frame.to_csv(diagnostics / "phase4b_pca_candidates.csv", index=False)
+    pca_seed_frame.to_csv(diagnostics / "phase4b_pca_seeds.csv", index=False)
 
     ensemble_candidates, ensemble_members, ensemble_models = _fit_seed_ensemble(
         x_train, x_validation, shared, settings["seed_ensemble_hmm"]
     )
-    ensemble_candidates.to_csv(reports / "phase4b_ensemble_candidates.csv", index=False)
-    ensemble_members.to_csv(reports / "phase4b_ensemble_members.csv", index=False)
+    ensemble_candidates.to_csv(diagnostics / "phase4b_ensemble_candidates.csv", index=False)
+    ensemble_members.to_csv(diagnostics / "phase4b_ensemble_members.csv", index=False)
 
     tie_tolerance = float(shared["tie_tolerance_loglik_per_observation"])
     pca_selection = select_candidate(pca_candidate_frame, tie_tolerance)
@@ -307,7 +308,7 @@ def build_exploratory_models(
             pca.components_.T, index=list(MODEL_FEATURES), columns=component_names
         )
         loadings.index.name = "feature"
-        loadings_path = reports / "phase4b_pca_loadings.csv"
+        loadings_path = diagnostics / "phase4b_pca_loadings.csv"
         loadings.reset_index().to_csv(loadings_path, index=False)
         report_hashes[loadings_path.name] = _sha256(loadings_path)
 
@@ -317,7 +318,7 @@ def build_exploratory_models(
                 "explained_variance_ratio": pca.explained_variance_ratio_,
             }
         )
-        explained_path = reports / "phase4b_pca_explained_variance.csv"
+        explained_path = diagnostics / "phase4b_pca_explained_variance.csv"
         explained.to_csv(explained_path, index=False)
         report_hashes[explained_path.name] = _sha256(explained_path)
 
@@ -326,7 +327,7 @@ def build_exploratory_models(
         profiles.insert(0, "training_variance_mapping", state_variances)
         profiles.insert(0, "state_label", state_labels)
         profiles.insert(0, "state", np.arange(state_count))
-        profiles_path = reports / "phase4b_pca_state_profiles.csv"
+        profiles_path = diagnostics / "phase4b_pca_state_profiles.csv"
         profiles.to_csv(profiles_path, index=False)
         report_hashes[profiles_path.name] = _sha256(profiles_path)
 
@@ -336,7 +337,7 @@ def build_exploratory_models(
             columns=[f"to_{label}" for label in state_labels],
         )
         transition.index.name = "origin"
-        transition_path = reports / "phase4b_pca_transition_matrix.csv"
+        transition_path = diagnostics / "phase4b_pca_transition_matrix.csv"
         transition.reset_index().to_csv(transition_path, index=False)
         report_hashes[transition_path.name] = _sha256(transition_path)
         pca_selected = {"state_count": state_count, "seed": seed}

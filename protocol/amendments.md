@@ -11,7 +11,8 @@
 - **Locked-test results viewed:** No.
 - **Classification:** Confirmatory; operational source-coverage amendment made before feature construction or outcome analysis.
 
-The original v1.0 protocol is preserved in `protocol/archive/research_protocol_v1.0.md`.
+Earlier working drafts remain available in Git history; the public tree retains only the final
+protocol and this amendment log.
 
 ## Amendment 2 — realised-volatility implementation clarification
 

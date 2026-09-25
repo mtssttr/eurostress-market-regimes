@@ -1,29 +1,34 @@
 # EuroStress
 
-**A point-in-time test of whether latent European cross-asset regimes improve next-week equity-risk forecasts.**
+**European market regimes, volatility forecasting and validation of one-day VaR and Expected Shortfall.**
 
-EuroStress is an end-to-end quantitative research project built on weekly European equity, foreign-exchange, yield-curve, sovereign-fragmentation and ECB stress data from 2007 to 2025. It compares Gaussian hidden Markov models with simple volatility benchmarks under chronological validation, model-stability rules and a sealed six-year test.
+EuroStress is an end-to-end quantitative risk project built on European equity, foreign-exchange, yield-curve, sovereign-fragmentation and ECB stress data from 2007 to 2025. It first tests whether latent regimes improve next-week variance forecasts, then uses those regimes to examine whether conventional daily VaR and Expected Shortfall models fail differently across market states.
 
-The main result is deliberately not a success story: fixed-lambda EWMA produced the lowest locked-test QLIKE. The regime model was more useful as a contemporaneous stress monitor than as a next-week variance or crash-warning model.
+The main results are deliberately not success stories. Fixed-lambda EWMA produced the lowest weekly forecast loss. In the market-risk extension, every model exceeded its intended 99% VaR exception rate; GARCH adapted faster during the COVID shock and avoided significant first-order exception clustering, but still failed unconditional coverage.
 
 ![EuroStress portfolio cover](reports/figures/portfolio_cover.png)
 
-**Portfolio presentation:** [view the 12-slide PDF](reports/EuroStress_Quant_Risk_Portfolio_Deck.pdf) or [download the editable PowerPoint](reports/EuroStress_Quant_Risk_Portfolio_Deck.pptx).
+**Portfolio presentation:** [view the 14-slide PDF](reports/EuroStress_Market_Risk_Portfolio_Deck.pdf) or [download the editable PowerPoint](reports/EuroStress_Market_Risk_Portfolio_Deck.pptx).
 
 ## Result in one minute
 
+- **Market-risk validation:** four one-day models were tested across 1,510 returns from 2020–2025 using historical simulation, rolling Gaussian, EWMA and GARCH(1,1) volatility.
+- **VaR coverage:** 99% VaR produced 26–39 exceptions versus 15.1 expected; every model failed correct unconditional coverage at the 5% level.
+- **Exception dynamics:** GARCH was the only model whose 99% exceptions did not show significant first-order clustering (`p = 0.794`), although its exception count remained too high.
+- **Expected Shortfall:** realised losses on 97.5% VaR exception days exceeded forecast ES for every model; severity ratios ranged from 1.13 to 1.43.
 - **Forecasting:** EWMA achieved the lowest mean QLIKE, 0.5530, across 312 locked-test weeks.
-- **Confirmatory evidence:** the volatility-only HMM did not establish an improvement over EWMA; effect -0.0912 with a frozen 95% block-bootstrap interval of [-0.1768, 0.0015].
-- **Exploratory evidence:** neither the PCA HMM nor the qualified-seed ensemble beat EWMA.
+- **Regime models:** no HMM established an improvement over EWMA.
 - **Monitoring:** the PCA high-risk-state probability had a Spearman correlation of 0.746 with ECB New CISS.
-- **Tail events:** a validation-frozen shock rule produced four false alerts and missed all seven defined next-week tail events.
-- **Feature sensitivity:** equity realised volatility was the only input with clear positive marginal value in the frozen no-refit ablation.
+
+![Risk-model coverage across regimes](reports/figures/risk_validation_regimes.png)
 
 ![Locked-test QLIKE ranking](reports/figures/locked_test_qlike.png)
 
-## Research question
+## Research questions
 
 > Do latent European cross-asset regimes improve next-week equity-risk forecasts over simple volatility benchmarks?
+
+> How reliable are conventional market-risk models across financial-stress regimes?
 
 The project separates three uses of the same latent-state machinery:
 
@@ -31,7 +36,7 @@ The project separates three uses of the same latent-state machinery:
 2. **Stress monitoring:** does the inferred high-risk probability align with an external systemic-stress measure?
 3. **Tail-event screening:** do frozen tail probabilities or shock scores identify unusually negative next-week equity returns?
 
-Only the first question was the primary forecasting objective. Monitoring and tail metrics are reported with their original confirmatory or exploratory status.
+The first study was specified before the 2020–2025 test was opened. The VaR/ES module is explicitly labelled as a post-hoc extension: it adds practical model-validation work without rewriting the original result.
 
 ## Point-in-time design
 
@@ -40,6 +45,7 @@ Only the first question was the primary forecasting objective. Monitoring and ta
 | Training | 30 Mar 2007–31 Dec 2015 | Fit scaling, candidate models and event thresholds |
 | Validation | 1 Jan 2016–31 Dec 2019 | Apply admissibility rules and freeze candidate choices |
 | Locked test | 1 Jan 2020–26 Dec 2025 | Evaluate once across 312 weekly forecasts |
+| Risk-validation extension | 3 Jan 2020–30 Dec 2025 | Backtest 1,510 one-day VaR and ES forecasts |
 
 Every model row uses a Friday information cut-off. Source dates are retained, feature scaling is fit on the training sample only, and next-week targets begin after the information date.
 
@@ -54,7 +60,7 @@ Every model row uses a Friday information cut-off. Source dates are retained, fe
 
 ECB New CISS is kept outside the forecasting feature set and used as an external stress-monitoring reference.
 
-## Models and governance
+## Models and validation design
 
 The benchmark set contains 20-day historical variance and EWMA with fixed `lambda = 0.94`.
 
@@ -65,7 +71,7 @@ Two branches proceeded to the locked evaluation:
 - **Confirmatory secondary:** a two-state volatility-only HMM that passed the frozen rules.
 - **Exploratory:** a train-only PCA HMM and an ensemble over validation-qualified seeds. These were frozen before the test was opened, but they remain labelled exploratory.
 
-This distinction is part of the result. Stabilising a model does not retroactively convert it into confirmatory evidence.
+The distinction matters because stabilising a model after a failed specification does not retroactively create confirmatory evidence.
 
 ## Locked-test results
 
@@ -97,6 +103,30 @@ Seven locked-test weeks fell below the training fifth-percentile next-week retur
 
 In a frozen no-refit ablation, removing equity realised volatility increased mean PCA-model QLIKE by 0.0246. Removing the other cross-asset inputs did not show incremental next-week variance value.
 
+## Market-risk validation extension
+
+The extension compares four one-day 99% VaR and 97.5% Expected Shortfall implementations:
+
+- 250-day historical simulation;
+- 250-day rolling Gaussian VaR/ES;
+- Gaussian EWMA volatility with `lambda = 0.94`;
+- Gaussian GARCH(1,1), estimated through 2019 and held fixed during evaluation.
+
+Every forecast excludes the current return. VaR is assessed with exception rates, the Kupiec unconditional-coverage test, the Christoffersen independence test and their combined conditional-coverage test. Expected Shortfall is accompanied by a clearly labelled severity diagnostic rather than an overstated formal claim.
+
+| Model | 99% exceptions | Exception rate | Kupiec p-value | Independence p-value |
+|---|---:|---:|---:|---:|
+| Historical simulation | 26 | 1.72% | 0.011 | <0.001 |
+| Rolling Gaussian | 37 | 2.45% | <0.001 | <0.001 |
+| EWMA Gaussian | 39 | 2.58% | <0.001 | 0.019 |
+| GARCH(1,1) Gaussian | 34 | 2.25% | <0.001 | **0.794** |
+
+![Daily VaR forecasts and rolling coverage](reports/figures/risk_validation_coverage.png)
+
+All models underestimated 99% tail frequency over the complete period. GARCH adapted more quickly during the COVID shock—three exceptions versus six for EWMA, eight for historical simulation and eleven for the rolling Gaussian model—but still did not achieve correct unconditional coverage. Regime-conditional results are descriptive: the weekly state can react after a sudden daily shock and is not treated as a causal driver of model failure.
+
+Full results: [`reports/risk_validation_report.md`](reports/risk_validation_report.md).
+
 ## What the project demonstrates
 
 - point-in-time financial feature engineering with explicit information dates;
@@ -104,9 +134,11 @@ In a frozen no-refit ablation, removing equity realised volatility increased mea
 - deterministic multi-seed GMM/HMM estimation and stability diagnostics;
 - PCA and seed aggregation as clearly labelled exploratory stabilisation;
 - benchmark discipline, QLIKE evaluation and block-bootstrap uncertainty;
+- one-day historical, Gaussian, EWMA and GARCH VaR/ES implementation;
+- Kupiec, Christoffersen and regime-conditional market-risk diagnostics;
 - reproducible data lineage, hashes, automated tests and failure reporting.
 
-The appropriate claim is: **simple EWMA remained difficult to beat, while latent regimes aligned more convincingly with contemporaneous European systemic stress than with next-week risk outcomes.**
+The appropriate claim is: **simple EWMA remained difficult to beat for weekly variance forecasting, while standard Gaussian tail-risk models materially under-covered realised daily losses—especially during abrupt stress—and required separate coverage and independence diagnostics.**
 
 ## Reproduce the pipeline
 
@@ -122,23 +154,20 @@ make features
 make benchmarks
 make models
 make exploratory
+make risk-validation
 ```
 
-The final evaluation was intentionally not exposed as a routine Make target. Its specification, hashes and one-time unlock process are documented in [`docs/final_evaluation_specification.md`](docs/final_evaluation_specification.md) and [`protocol/final_evaluation_lock.json`](protocol/final_evaluation_lock.json).
-
-The frozen lock hash used for the reported evaluation is:
-
-```text
-f9d65e273660135d3b67b81af8ab3abaeb6be6b452d4363842f134fc7e0d58e9
-```
+The original weekly evaluation specification and result hash are documented in [`docs/final_evaluation_specification.md`](docs/final_evaluation_specification.md). The risk-validation command reproduces only the post-hoc extension; it does not reopen or alter the original comparison.
 
 ## Repository map
 
 ```text
-config/                 Source catalogue and frozen evaluation configuration
-docs/                   Feature, benchmark, evaluation and portfolio documentation
-protocol/               Research protocol, amendments and final lock
-reports/                Selection reports, final results and presentation figures
+config/                 Source, model and risk-validation configuration
+docs/                   Methods, data definitions and interview material
+protocol/               Final original protocol, amendments and evaluation lock
+reports/                Main results, aggregate validation tables and figures
+reports/model_selection/  Original model-selection diagnostics
+reports/exploratory/      Exploratory PCA and ensemble diagnostics
 src/eurostress/         Reusable package code
 tests/                  Deterministic unit and leakage tests
 data/                   Local-only raw, processed, model and evaluation artifacts
@@ -151,8 +180,18 @@ Raw third-party observations are not redistributed. The repository contains sour
 ## Portfolio materials
 
 - [`reports/final_project_report.md`](reports/final_project_report.md): full locked-test report
+- [`reports/risk_validation_report.md`](reports/risk_validation_report.md): VaR, ES, GARCH and regime-conditional validation report
 - [`docs/portfolio_interview_guide.md`](docs/portfolio_interview_guide.md): CV bullets and interview talking points
-- [`reports/EuroStress_Quant_Risk_Portfolio_Deck.pdf`](reports/EuroStress_Quant_Risk_Portfolio_Deck.pdf): recruiter-friendly 12-slide presentation
-- [`reports/EuroStress_Quant_Risk_Portfolio_Deck.pptx`](reports/EuroStress_Quant_Risk_Portfolio_Deck.pptx): editable PowerPoint with speaker notes
+- [`docs/risk_validation_defense.md`](docs/risk_validation_defense.md): formulas, test logic and technical interview questions
+- [`reports/EuroStress_Market_Risk_Portfolio_Deck.pdf`](reports/EuroStress_Market_Risk_Portfolio_Deck.pdf): recruiter-friendly 14-slide presentation
+- [`reports/EuroStress_Market_Risk_Portfolio_Deck.pptx`](reports/EuroStress_Market_Risk_Portfolio_Deck.pptx): editable PowerPoint with speaker notes
+
+## Selected methodological references
+
+- Bollerslev (1986), [*Generalized Autoregressive Conditional Heteroskedasticity*](https://doi.org/10.1016/0304-4076(86)90063-1).
+- Kupiec (1995), [*Techniques for Verifying the Accuracy of Risk Measurement Models*](https://www.fedinprint.org/item/fedgfe/34596/original).
+- Christoffersen (1998), [*Evaluating Interval Forecasts*](https://doi.org/10.2307/2527341).
+- McNeil and Frey (2000), [*Estimation of Tail-Related Risk Measures for Heteroscedastic Financial Time Series*](https://doi.org/10.1016/S0927-5398(00)00012-8).
+- Basel Committee, [*Basel Framework*, MAR33](https://www.bis.org/baselframework/BaselFramework.pdf).
 
 The project supports no trading-profitability, causal-policy or reliable crash-prediction claim.

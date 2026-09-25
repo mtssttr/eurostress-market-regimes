@@ -365,8 +365,9 @@ def build_models(
     processed = Path(processed_directory)
     model_path = Path(model_directory)
     reports = Path(report_directory)
+    diagnostics = reports / "model_selection"
     model_path.mkdir(parents=True, exist_ok=True)
-    reports.mkdir(parents=True, exist_ok=True)
+    diagnostics.mkdir(parents=True, exist_ok=True)
     feature_manifest = processed / "feature_manifest.json"
     benchmark_manifest = processed / "benchmark_manifest.json"
     required = (
@@ -412,8 +413,8 @@ def build_models(
 
     candidate_frame = pd.DataFrame(candidate_rows)
     seed_frame = pd.DataFrame(seed_rows)
-    candidate_frame.to_csv(reports / "phase4_candidate_diagnostics.csv", index=False)
-    seed_frame.to_csv(reports / "phase4_seed_diagnostics.csv", index=False)
+    candidate_frame.to_csv(diagnostics / "phase4_candidate_diagnostics.csv", index=False)
+    seed_frame.to_csv(diagnostics / "phase4_seed_diagnostics.csv", index=False)
 
     run_id = _model_run_id(Path(config_path), feature_manifest, benchmark_manifest)
     selected_metadata: dict[str, dict[str, int] | None] = {}

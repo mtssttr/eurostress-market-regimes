@@ -89,6 +89,35 @@ no-refit sensitivity test. The remaining cross-asset inputs did not demonstrate 
 next-week variance-forecast value, which is consistent with the broader negative forecasting
 result.
 
+## Post-hoc market-risk validation extension
+
+After preserving the original sealed result, the project added a contained daily model-validation
+module. It compared 250-day historical simulation, a 250-day rolling Gaussian model, EWMA with
+`lambda = 0.94`, and a Gaussian GARCH(1,1). GARCH parameters were estimated only through 2019 and
+then held fixed. Every forecast used information available before the realised return.
+
+Across 1,510 daily returns from 2020–2025, the 99% VaR results were:
+
+| Model | Exceptions | Expected | Exception rate | Kupiec p-value | Independence p-value |
+|---|---:|---:|---:|---:|---:|
+| Historical simulation | 26 | 15.1 | 1.72% | 0.011 | <0.001 |
+| Rolling Gaussian | 37 | 15.1 | 2.45% | <0.001 | <0.001 |
+| EWMA Gaussian | 39 | 15.1 | 2.58% | <0.001 | 0.019 |
+| GARCH(1,1) Gaussian | 34 | 15.1 | 2.25% | <0.001 | **0.794** |
+
+Every model under-covered losses. GARCH was the only specification whose exception sequence did
+not show significant first-order clustering, but its total exception frequency remained too high.
+During the COVID window it reduced exceptions to three, compared with six for EWMA, eight for
+historical simulation and eleven for the rolling Gaussian model.
+
+At the 97.5% tail level, realised mean exception losses exceeded forecast Expected Shortfall for
+every model; descriptive severity ratios ranged from 1.13 to 1.43. These are diagnostics rather
+than a claimed formal ES backtest. Regime and named-window comparisons are also descriptive because
+the existing weekly state is contemporaneous and can react after an abrupt daily shock.
+
+The complete extension is reported in
+[`risk_validation_report.md`](risk_validation_report.md).
+
 ## Appropriate project claim
 
 EuroStress demonstrates a reproducible, leakage-controlled comparison of European market-regime
@@ -103,6 +132,8 @@ A concise CV description could be:
 > fragmentation and ECB stress data; evaluated GMM/HMM/PCA-ensemble models with chronological
 > validation, seed-stability controls, a sealed six-year test and block-bootstrap QLIKE. Found
 > EWMA remained the strongest variance forecast, while filtered regime stress correlated 0.75
-> with ECB New CISS.
+> with ECB New CISS. Extended the project with GARCH, historical, Gaussian and EWMA one-day VaR/ES
+> validation across 1,510 returns; all 99% models under-covered losses, while GARCH removed
+> significant first-order exception clustering.
 
 The project supports no trading-profitability or causal-policy claim.

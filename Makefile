@@ -1,6 +1,6 @@
-.PHONY: setup audit data coverage init-db features benchmarks models exploratory freeze-evaluation test lint
+.PHONY: setup audit data coverage init-db features benchmarks models exploratory risk-validation freeze-evaluation test lint
 
-PYTHON = PYTHONPATH=src LOKY_MAX_CPU_COUNT=1 .venv/bin/python
+PYTHON = PYTHONPATH=src LOKY_MAX_CPU_COUNT=1 MPLCONFIGDIR=.matplotlib-cache .venv/bin/python
 
 setup:
 	python3 -m venv .venv
@@ -30,6 +30,9 @@ models:
 
 exploratory:
 	$(PYTHON) -m eurostress.cli fit-exploratory
+
+risk-validation:
+	$(PYTHON) -m eurostress.cli risk-validation
 
 freeze-evaluation:
 	$(PYTHON) -m eurostress.cli freeze-evaluation

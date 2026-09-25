@@ -1,0 +1,38 @@
+status: post_hoc_extension
+question: "How reliable are conventional market-risk models across financial-stress regimes?"
+
+sample:
+  estimation_end: "2019-12-31"
+  evaluation_start: "2020-01-01"
+  evaluation_end: "2025-12-31"
+
+models:
+  historical_window_trading_days: 250
+  gaussian_window_trading_days: 250
+  ewma_lambda: 0.94
+  ewma_initialization_trading_days: 250
+  garch_stationarity_cap: 0.999
+  garch_maximum_iterations: 2000
+
+evaluation:
+  tail_probabilities: [0.01, 0.025, 0.05]
+  primary_var_tail_probability: 0.01
+  primary_es_tail_probability: 0.025
+  regime_probability_threshold: 0.50
+  rolling_coverage_window_trading_days: 250
+
+stress_windows:
+  - name: covid_market_shock
+    start: "2020-02-20"
+    end: "2020-04-30"
+  - name: inflation_energy_repricing
+    start: "2022-02-24"
+    end: "2022-10-31"
+  - name: banking_stress
+    start: "2023-03-08"
+    end: "2023-04-30"
+
+reporting:
+  classification: post_hoc_market_risk_extension
+  prohibit_trading_or_profitability_claims: true
+  raw_daily_returns_are_local_only: true

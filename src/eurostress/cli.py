@@ -16,6 +16,7 @@ from eurostress.evaluation import evaluate_locked_test, freeze_evaluation
 from eurostress.exploratory import build_exploratory_models
 from eurostress.features import build_feature_dataset
 from eurostress.models import build_models
+from eurostress.risk_validation import build_risk_validation
 from eurostress.sources import EcbClient, YahooClient
 
 
@@ -146,6 +147,18 @@ def build_parser() -> argparse.ArgumentParser:
     exploratory_parser.add_argument("--output", default="data/exploratory")
     exploratory_parser.add_argument("--reports", default="reports")
 
+    risk_parser = subparsers.add_parser(
+        "risk-validation",
+        help="Run the post-hoc VaR, ES and regime-conditional validation extension",
+    )
+    risk_parser.add_argument("--risk-config", default="config/risk_validation.yml")
+    risk_parser.add_argument("--equity", default="data/raw/euro_stoxx_50.parquet")
+    risk_parser.add_argument(
+        "--regimes", default="data/evaluation/locked_forecasts_and_outcomes.parquet"
+    )
+    risk_parser.add_argument("--output", default="data/risk_validation")
+    risk_parser.add_argument("--reports", default="reports")
+
     freeze_parser = subparsers.add_parser(
         "freeze-evaluation", help="Freeze final evaluation hashes without reading test rows"
     )
@@ -249,6 +262,22 @@ def main() -> int:
         print(f"- PCA HMM: {result.pca_selected or 'no admissible candidate'}")
         print(f"- seed ensemble HMM: {result.ensemble_selected or 'no operational candidate'}")
         print("Classification: exploratory; locked-test rows read: 0; target metrics: no")
+        return 0
+    if args.command == "risk-validation":
+        result = build_risk_validation(
+            config_path=args.risk_config,
+            equity_path=args.equity,
+            regime_path=args.regimes,
+            output_directory=args.output,
+            report_directory=args.reports,
+        )
+        print(
+            f"Validated {result.model_count} models across {result.evaluation_days:,} daily "
+            f"returns from {result.evaluation_start} to {result.evaluation_end}"
+        )
+        print(f"Higher-risk regime days: {result.high_risk_days:,}")
+        print(f"Report: {result.report_path}")
+        print("Classification: post-hoc market-risk extension; original sealed result unchanged")
         return 0
     if args.command == "freeze-evaluation":
         destination = freeze_evaluation(args.evaluation_config, args.output)
