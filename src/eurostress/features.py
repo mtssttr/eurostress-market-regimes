@@ -13,6 +13,7 @@ import numpy as np
 import pandas as pd
 
 from eurostress.config import ProjectConfig
+from eurostress.controls import enforce_raw_controls
 from eurostress.db import initialize_database
 
 FEATURE_VERSION = "1.0.0"
@@ -224,6 +225,7 @@ def build_feature_dataset(
     output_directory: str | Path,
     database_path: str | Path,
 ) -> FeatureBuildResult:
+    enforce_raw_controls(config, input_directory)
     input_path = Path(input_directory)
     output_path = Path(output_directory)
     output_path.mkdir(parents=True, exist_ok=True)

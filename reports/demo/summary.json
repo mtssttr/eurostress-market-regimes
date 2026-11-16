@@ -1,0 +1,38 @@
+{
+  "classification": "synthetic educational demonstration",
+  "cases": [
+    {
+      "case": "duplicate",
+      "before": "BLOCKED",
+      "after": "PASS",
+      "action": "Verified against source; removed duplicate observation.",
+      "calculation_before": "withheld",
+      "recomputed_last_return": 0.02126545451587076
+    },
+    {
+      "case": "missing",
+      "before": "BLOCKED",
+      "after": "PASS",
+      "action": "Restored missing value from the synthetic source of truth.",
+      "calculation_before": "withheld",
+      "recomputed_last_return": 0.02126545451587076
+    },
+    {
+      "case": "stale",
+      "before": "BLOCKED",
+      "after": "PASS",
+      "action": "Reloaded missing dates from the synthetic source of truth.",
+      "calculation_before": "withheld",
+      "recomputed_last_return": 0.02126545451587076
+    },
+    {
+      "case": "unit",
+      "before": "BLOCKED",
+      "after": "PASS",
+      "action": "Verified source identity and corrected unit metadata; values unchanged.",
+      "calculation_before": "withheld",
+      "recomputed_last_return": 0.02126545451587076
+    }
+  ],
+  "source_sha256": "51aff562d773137adee8db1370daf7b09d320b2bfa0797753f54da27155d775d"
+}

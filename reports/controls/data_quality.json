@@ -1,0 +1,49 @@
+{
+  "status": "PASS",
+  "errors": 0,
+  "warnings": 6,
+  "findings": [
+    {
+      "series": "euro_stoxx_50",
+      "rule": "unit_unverified",
+      "severity": "WARNING",
+      "affected_rows": 4701,
+      "explanation": "Legacy input has no declared source unit."
+    },
+    {
+      "series": "eurusd",
+      "rule": "unit_unverified",
+      "severity": "WARNING",
+      "affected_rows": 4801,
+      "explanation": "Legacy input has no declared source unit."
+    },
+    {
+      "series": "euro_aaa_2y",
+      "rule": "unit_unverified",
+      "severity": "WARNING",
+      "affected_rows": 4791,
+      "explanation": "Legacy input has no declared source unit."
+    },
+    {
+      "series": "euro_aaa_10y",
+      "rule": "unit_unverified",
+      "severity": "WARNING",
+      "affected_rows": 4791,
+      "explanation": "Legacy input has no declared source unit."
+    },
+    {
+      "series": "euro_all_ratings_10y",
+      "rule": "unit_unverified",
+      "severity": "WARNING",
+      "affected_rows": 4791,
+      "explanation": "Legacy input has no declared source unit."
+    },
+    {
+      "series": "new_ciss",
+      "rule": "unit_unverified",
+      "severity": "WARNING",
+      "affected_rows": 4902,
+      "explanation": "Legacy input has no declared source unit."
+    }
+  ]
+}

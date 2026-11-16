@@ -1,0 +1,5 @@
+case,before,after,action,calculation_before,recomputed_last_return
+duplicate,BLOCKED,PASS,Verified against source; removed duplicate observation.,withheld,0.02126545451587076
+missing,BLOCKED,PASS,Restored missing value from the synthetic source of truth.,withheld,0.02126545451587076
+stale,BLOCKED,PASS,Reloaded missing dates from the synthetic source of truth.,withheld,0.02126545451587076
+unit,BLOCKED,PASS,Verified source identity and corrected unit metadata; values unchanged.,withheld,0.02126545451587076

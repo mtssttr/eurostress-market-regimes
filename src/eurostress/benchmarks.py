@@ -13,6 +13,7 @@ import numpy as np
 import pandas as pd
 
 from eurostress.config import ProjectConfig
+from eurostress.controls import enforce_raw_controls
 from eurostress.db import initialize_database
 
 BENCHMARK_VERSION = "1.0.0"
@@ -251,6 +252,7 @@ def build_benchmark_dataset(
     processed_directory: str | Path,
     database_path: str | Path,
 ) -> BenchmarkBuildResult:
+    enforce_raw_controls(config, raw_directory)
     raw_path = Path(raw_directory)
     processed_path = Path(processed_directory)
     raw_manifest = raw_path / "manifest.json"

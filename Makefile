@@ -42,3 +42,19 @@ test:
 
 lint:
 	.venv/bin/ruff check .
+
+.PHONY: data-gate demo tail-extension numerical-validation case-study
+data-gate:
+	$(PYTHON) -m eurostress.cli data-gate
+
+demo:
+	$(PYTHON) -m eurostress.cli demo
+
+tail-extension:
+	$(PYTHON) -m eurostress.cli tail-extension
+
+numerical-validation:
+	$(PYTHON) -m eurostress.numerical_validation
+
+case-study:
+	$(PYTHON) scripts/build_case_study.py

@@ -2,9 +2,26 @@
 
 **European market regimes, volatility forecasting and validation of one-day VaR and Expected Shortfall.**
 
+**Start here:** [two-page case study](output/pdf/EuroStress_Case_Study.pdf) |
+[offline control demonstration](reports/demo/README.md) |
+[numerical reference checks](reports/numerical_validation/report.md) |
+[exploratory tail-model comparison](reports/tail_extension/report.md).
+
+This AI-assisted independent educational project combines financial-data controls with
+quantitative model validation. It is not professional banking experience or a production
+trading-book system. The original weekly evaluation and market-risk results are preserved.
+
 EuroStress is an end-to-end quantitative risk project built on European equity, foreign-exchange, yield-curve, sovereign-fragmentation and ECB stress data from 2007 to 2025. It first tests whether latent regimes improve next-week variance forecasts, then uses those regimes to examine whether conventional daily VaR and Expected Shortfall models fail differently across market states.
 
-The main results are deliberately not success stories. Fixed-lambda EWMA produced the lowest weekly forecast loss. In the market-risk extension, every model exceeded its intended 99% VaR exception rate; GARCH adapted faster during the COVID shock and avoided significant first-order exception clustering, but still failed unconditional coverage.
+Fixed-lambda EWMA produced the lowest weekly forecast loss. In the original market-risk
+extension, every model exceeded its intended 99% VaR exception rate. GARCH adapted faster
+during the COVID shock and did not show significant first-order exception clustering,
+but still failed unconditional coverage.
+
+The later exploratory extension separates distribution choice from parameter updating.
+Monthly Student t GARCH produced 25 breaches versus 37 for its matched fixed Gaussian
+comparator, with lower mean quantile loss; correct coverage was still rejected (p=0.019).
+This comparator uses a different estimation window from the original GARCH baseline.
 
 ![EuroStress portfolio cover](reports/figures/portfolio_cover.png)
 
@@ -144,20 +161,60 @@ The appropriate claim is: **simple EWMA remained difficult to beat for weekly va
 
 Python 3.11 or newer is required.
 
+### Offline demonstration and numerical validation
+
+After dependency installation, these commands use synthetic data and require no market-data access:
+
+```bash
+make setup
+make test
+make demo numerical-validation
+```
+
+The demo blocks four deliberately corrupted inputs, records the source-verified correction,
+and recomputes only after controls pass. JSON reports distinguish data-quality failures
+from market-risk breaches. CI runs these offline checks on a clean checkout.
+
+### Existing local market data
+
+```bash
+make data-gate
+make tail-extension
+make case-study
+```
+
+The input gate checks hashes, dates, finite values, duplicates, freshness, declared units
+and weekly coverage. Material failures stop processing. Feature, benchmark and CLI risk
+builds invoke the gate. Original manifests predate unit declarations: six warnings remain
+explicitly visible rather than being silently called verified. Dates follow historical
+forecast cut-offs; historical revision vintages have not been fully reconstructed.
+
+`make case-study` requires the demo, numerical validation, data-gate and tail-extension
+reports. All 2020-2025 extension findings are labelled exploratory because those outcomes
+were already inspected. Row-level market observations and forecasts remain local.
+
+### Original research workflow
+
+The steps below build research inputs and models. They do not independently regenerate
+the original locked evaluation. That evaluation requires the matching local artifacts,
+the original lock and the procedure in `docs/final_evaluation_specification.md`.
+
 ```bash
 make setup
 make audit
 make test
 make data
+make coverage data-gate
 make init-db
 make features
 make benchmarks
 make models
 make exploratory
-make risk-validation
 ```
 
-The original weekly evaluation specification and result hash are documented in [`docs/final_evaluation_specification.md`](docs/final_evaluation_specification.md). The risk-validation command reproduces only the post-hoc extension; it does not reopen or alter the original comparison.
+`make risk-validation` additionally requires the existing local weekly regime evaluation
+artifact. Neither that command nor `make tail-extension` opens or modifies the original lock.
+New downloads can change source hashes and must not be presented as the identical sealed run.
 
 ## Repository map
 
@@ -183,6 +240,7 @@ Raw third-party observations are not redistributed. The repository contains sour
 - [`reports/risk_validation_report.md`](reports/risk_validation_report.md): VaR, ES, GARCH and regime-conditional validation report
 - [`docs/portfolio_interview_guide.md`](docs/portfolio_interview_guide.md): CV bullets and interview talking points
 - [`docs/risk_validation_defense.md`](docs/risk_validation_defense.md): formulas, test logic and technical interview questions
+- [`docs/application_positioning.md`](docs/application_positioning.md): Operations and Quantitative Strats CV wording, interview explanations and claim boundaries
 - [`reports/EuroStress_Market_Risk_Portfolio_Deck.pdf`](reports/EuroStress_Market_Risk_Portfolio_Deck.pdf): recruiter-friendly 14-slide presentation
 - [`reports/EuroStress_Market_Risk_Portfolio_Deck.pptx`](reports/EuroStress_Market_Risk_Portfolio_Deck.pptx): editable PowerPoint with speaker notes
 

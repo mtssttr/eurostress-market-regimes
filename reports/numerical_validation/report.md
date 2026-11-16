@@ -1,0 +1,25 @@
+# Numerical validation
+
+All assertions passed.
+
+Checks cover a GARCH variance path against arch with identical parameters and initial variance, analytical normal/Student t tails against numerical quadrature, and independent likelihood calculations for coverage and independence.
+
+The seeded Gaussian experiment checks empirical rejection frequency under a known null. It does not establish calibration on financial data.
+
+```json
+{
+  "status": "PASS",
+  "seed": 20261116,
+  "arch_version": "8.0.0",
+  "garch_max_absolute_variance_error": 4.0657581468206416e-20,
+  "es_max_absolute_quadrature_error": 6.654399253847032e-15,
+  "kupiec_reference_statistic_error": 0.0,
+  "independence_reference_statistic_error": 0.0,
+  "simulation_replications": 1000,
+  "simulation_observations_per_replication": 2000,
+  "simulation_tail_probability": 0.05,
+  "test_significance": 0.05,
+  "simulation_coverage_rejection_rate": 0.042,
+  "scope": "Numerical reference checks and specified-null simulation; not market validation."
+}
+```

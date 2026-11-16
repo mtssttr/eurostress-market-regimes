@@ -1,0 +1,40 @@
+{
+  "settings": {
+    "classification": "exploratory_post_hoc",
+    "question": "Do distribution choice and monthly parameter updating change tail calibration?",
+    "sample": {
+      "evaluation_start": "2020-01-01",
+      "evaluation_end": "2025-12-31"
+    },
+    "estimation": {
+      "trailing_observations": 1260,
+      "refit_schedule": "first_observation_each_calendar_month",
+      "mean": "Constant",
+      "maximum_iterations": 1000
+    },
+    "evaluation": {
+      "tail_probabilities": [
+        0.01,
+        0.025
+      ],
+      "primary_tail_probability": 0.01,
+      "minimum_observations": 100,
+      "prospective_status": "2020-2025 outcomes previously inspected; no new untouched holdout"
+    }
+  },
+  "configuration_sha256": "fc579af15f7369699a7cf77b4d60094f29fe50daf329b676896d34fc5db04f2a",
+  "input_sha256": "9e2d3160de105f3f790f92d4d87252ce5fe78f2ce6423df4a3b13883f8f60088",
+  "evaluation_days": 1510,
+  "fits": 146,
+  "all_fits_converged": true,
+  "versions": {
+    "python": "3.13.7",
+    "arch": "8.0.0",
+    "numpy": "2.5.3",
+    "pandas": "2.3.3",
+    "scipy": "1.18.1"
+  },
+  "source_sha256": "f9363be5dcc50d606c9885ac348a4bf9a33ceb80213cbef3b8ff1954d077edee",
+  "forecast_sha256": "1e2dd4ae26f061a77a8c3e2bf7fad0656d0486d90798cc8dc647a0b50000ce67",
+  "comparison_sha256": "2d4308a45111f74b7b794f567398b86165a33be1ff990a09db2c62a414e8b9b4"
+}

@@ -4,6 +4,7 @@ __pycache__/
 .pytest_cache/
 .ruff_cache/
 .matplotlib-cache/
+tmp/
 *.egg-info/
 
 # Downloaded or generated data
@@ -13,6 +14,7 @@ data/models/
 data/exploratory/
 data/evaluation/
 data/risk_validation/
+data/tail_extension/
 data/eurostress.duckdb
 
 # Generated reports and figures

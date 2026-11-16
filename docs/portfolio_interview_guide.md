@@ -2,7 +2,9 @@
 
 ## Thirty-second project summary
 
-I built a European market-risk research pipeline using equity, FX, yield-curve and sovereign-fragmentation data from 2007 to 2025. The first study tested HMM regimes against simple weekly volatility forecasts; EWMA won, while the regime probability tracked ECB systemic stress. I then added a contained model-validation module comparing historical, Gaussian, EWMA and GARCH one-day VaR and Expected Shortfall. All four models under-covered 99% losses, while GARCH adapted faster during COVID and was the only model without significant first-order exception clustering.
+I built a European financial-data and market-risk research pipeline. Simple EWMA remained the strongest weekly volatility benchmark. I then tested daily tail-risk calibration and added an exploratory comparison separating distribution choice from parameter updating. Monthly Student t GARCH reduced breaches against a matched Gaussian comparator, but still failed correct coverage. Blocking input controls, synthetic investigations and independent numerical checks support the reliability of the analysis.
+
+See [application positioning](application_positioning.md) for Operations and Quantitative Strats wording and [the exploratory report](../reports/tail_extension/report.md) for the new comparison. The original daily-model statistics below remain a separate result set.
 
 ## CV bullets
 
@@ -20,7 +22,7 @@ I built a European market-risk research pipeline using equity, FX, yield-curve a
 
 ### Short one-line version
 
-- Built a European market-risk validation pipeline spanning HMM regimes, GARCH volatility and formal VaR/ES backtesting; simple models remained difficult to beat and all 99% VaR specifications under-covered realised losses.
+- Built a European market-risk validation pipeline spanning HMM regimes, GARCH volatility, formal VaR backtests and descriptive ES diagnostics; simple models remained difficult to beat and all original 99% VaR specifications under-covered realised losses.
 
 ## Interview talking points
 
@@ -58,7 +60,7 @@ At 99%, the models produced 26 to 39 exceptions instead of the 15.1 expected. Ku
 
 ### Why could GARCH pass independence but fail coverage?
 
-The tests answer different questions. Kupiec asks whether the total exception frequency is correct. Christoffersen asks whether one exception makes another immediately more likely. GARCH adapted to volatility clustering well enough to disperse exceptions, but the Gaussian tail assumption still left too little mass in the extremes, so the overall count remained excessive.
+The tests answer different questions. Kupiec asks whether the total exception frequency is correct. Christoffersen asks whether one exception makes another immediately more likely. GARCH's exception count was excessive without detectable first-order clustering. These tests alone do not identify the cause: distributional misspecification, parameter estimation and changing market dynamics can all matter. The later matched extension investigates distribution choice and parameter updating separately. Non-rejection of independence is not proof of independent exceptions.
 
 ### How did you evaluate Expected Shortfall?
 
@@ -66,7 +68,7 @@ I reported 97.5% ES, matching the Basel one-tailed confidence level, and compare
 
 ### What would you do next?
 
-I would keep both current result sets unchanged. The next contained extension would replace Gaussian GARCH innovations with Student-t or filtered historical simulation and apply a formal joint VaR/ES backtest. EVT would be justified only after checking threshold stability and retaining enough tail observations. I would not retune the HMM to make the old test look better.
+I have now completed the Student t and monthly-refitting extension, preserving the original results. The next research priorities would be a genuinely untouched prospective evaluation and a formal joint VaR/ES backtest. A broader asset sample would help assess generality. Filtered historical simulation could be another predetermined comparison; EVT would require checking threshold stability and retaining enough tail observations. I would not retune the HMM to make the old test look better.
 
 ### How did your physics training help?
 

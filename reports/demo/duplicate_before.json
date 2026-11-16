@@ -1,0 +1,14 @@
+{
+  "status": "BLOCKED",
+  "errors": 1,
+  "warnings": 0,
+  "findings": [
+    {
+      "series": "synthetic_equity",
+      "rule": "duplicate_date",
+      "severity": "ERROR",
+      "affected_rows": 2,
+      "explanation": "Resolve duplicate dates against the source."
+    }
+  ]
+}

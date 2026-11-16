@@ -1,0 +1,14 @@
+{
+  "status": "BLOCKED",
+  "errors": 1,
+  "warnings": 0,
+  "findings": [
+    {
+      "series": "synthetic_equity",
+      "rule": "unit_mismatch",
+      "severity": "ERROR",
+      "affected_rows": 64,
+      "explanation": "Declared percent_per_annum; expected index_points."
+    }
+  ]
+}

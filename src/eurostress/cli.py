@@ -11,6 +11,7 @@ from pathlib import Path
 from eurostress.audit import generate_coverage_report
 from eurostress.benchmarks import build_benchmark_dataset
 from eurostress.config import load_config
+from eurostress.controls import DataQualityError, enforce_raw_controls
 from eurostress.db import initialize_database
 from eurostress.evaluation import evaluate_locked_test, freeze_evaluation
 from eurostress.exploratory import build_exploratory_models
@@ -71,6 +72,7 @@ def download(config_path: str, output_directory: str) -> int:
                 "series_name": series.name,
                 "series_id": str(frame["series_id"].iloc[0]),
                 "provider": series.provider,
+                "unit": series.unit,
                 "source_reference": source_reference,
                 "requested_start": start,
                 "requested_end_inclusive": end,
@@ -105,6 +107,16 @@ def build_parser() -> argparse.ArgumentParser:
     subparsers = parser.add_subparsers(dest="command", required=True)
 
     subparsers.add_parser("audit", help="Validate and display the configured sources")
+
+    demo_parser = subparsers.add_parser("demo", help="Run offline synthetic control cases")
+    demo_parser.add_argument("--output", default="reports/demo")
+    gate_parser = subparsers.add_parser("data-gate", help="Block materially invalid raw inputs")
+    gate_parser.add_argument("--input", default="data/raw")
+    gate_parser.add_argument("--output", default="reports/controls/data_quality.json")
+    extension_parser = subparsers.add_parser("tail-extension", help="Exploratory tail-model study")
+    extension_parser.add_argument("--extension-config", default="config/tail_extension.yml")
+    extension_parser.add_argument("--equity", default="data/raw/euro_stoxx_50.parquet")
+    extension_parser.add_argument("--output", default="reports/tail_extension")
 
     download_parser = subparsers.add_parser("download", help="Download raw source data")
     download_parser.add_argument("--output", default="data/raw")
@@ -179,6 +191,27 @@ def build_parser() -> argparse.ArgumentParser:
 
 def main() -> int:
     args = build_parser().parse_args()
+    if args.command == "demo":
+        from eurostress.demo import run_demo
+
+        result = run_demo(args.output)
+        print(f"Completed {len(result['cases'])} synthetic investigations: {args.output}")
+        return 0
+    if args.command == "data-gate":
+        try:
+            result = enforce_raw_controls(load_config(args.config), args.input, args.output)
+        except DataQualityError as exc:
+            print(str(exc))
+            return 1
+        print(f"PASS ({result['warnings']} explicit warnings): {args.output}")
+        return 0
+    if args.command == "tail-extension":
+        from eurostress.tail_extension import run_extension
+
+        enforce_raw_controls(load_config(args.config), Path(args.equity).parent)
+        result = run_extension(args.extension_config, args.equity, args.output)
+        print(f"Completed exploratory comparison: {result['evaluation_days']} days; {args.output}")
+        return 0
     if args.command == "audit":
         return audit(args.config)
     if args.command == "download":
@@ -189,7 +222,8 @@ def main() -> int:
         for result in results:
             print(f"{result.series_name}: {result.weekly_coverage_percent:.2f}% weekly coverage")
         print(f"Wrote coverage report to {args.output}")
-        return 0
+        return int(any(result.duplicate_dates or result.null_values or
+                       result.weekly_coverage_percent < 95 for result in results))
     if args.command == "init-db":
         path = initialize_database(args.database)
         print(f"Initialized {path}")
@@ -264,6 +298,7 @@ def main() -> int:
         print("Classification: exploratory; locked-test rows read: 0; target metrics: no")
         return 0
     if args.command == "risk-validation":
+        enforce_raw_controls(load_config(args.config), Path(args.equity).parent)
         result = build_risk_validation(
             config_path=args.risk_config,
             equity_path=args.equity,

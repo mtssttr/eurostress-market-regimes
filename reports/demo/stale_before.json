@@ -1,0 +1,14 @@
+{
+  "status": "BLOCKED",
+  "errors": 1,
+  "warnings": 0,
+  "findings": [
+    {
+      "series": "synthetic_equity",
+      "rule": "stale_feed",
+      "severity": "ERROR",
+      "affected_rows": 54,
+      "explanation": "Latest observation is 14 calendar days old."
+    }
+  ]
+}

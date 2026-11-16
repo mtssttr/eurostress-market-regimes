@@ -1,0 +1,14 @@
+{
+  "status": "BLOCKED",
+  "errors": 1,
+  "warnings": 0,
+  "findings": [
+    {
+      "series": "synthetic_equity",
+      "rule": "missing_or_nonfinite",
+      "severity": "ERROR",
+      "affected_rows": 1,
+      "explanation": "Missing/nonfinite values cannot enter models."
+    }
+  ]
+}

@@ -9,6 +9,7 @@ description = "A point-in-time European cross-asset market risk monitor"
 readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [
+  "arch>=7,<9",
   "duckdb>=1.1,<2",
   "hmmlearn>=0.3,<1",
   "joblib>=1.4,<2",
